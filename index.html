@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MiniLang —— 浏览器端迷你语言解释器与 REPL</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="toolbar">
+    <div class="brand">
+      <span class="logo">⌁</span>
+      <span class="title">MiniLang</span>
+      <span class="subtitle">迷你语言解释器 · 交互式 REPL</span>
+    </div>
+    <div class="actions">
+      <button id="btn-run" class="btn btn-primary" type="button">▶ 运行脚本</button>
+      <button id="btn-test" class="btn" type="button">运行测试</button>
+      <button id="btn-clear" class="btn" type="button">清空输出</button>
+      <label class="select-wrap">
+        加载示例
+        <select id="example-select">
+          <option value="">— 选择示例 —</option>
+        </select>
+      </label>
+    </div>
+  </header>
+
+  <main class="workbench">
+    <!-- 左：代码编辑区 -->
+    <section class="pane pane-editor">
+      <div class="pane-header">
+        <span>代码编辑</span>
+        <span class="hint">Ctrl+Enter 运行</span>
+      </div>
+      <div class="editor-wrap">
+        <pre id="gutter" class="gutter" aria-hidden="true"></pre>
+        <textarea
+          id="editor"
+          class="editor"
+          spellcheck="false"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          wrap="off"></textarea>
+      </div>
+      <details class="ast-panel" open>
+        <summary>AST 可视化</summary>
+        <pre id="ast-content" class="ast-content">（运行脚本后在此显示 AST 树）</pre>
+      </details>
+    </section>
+
+    <!-- 右：REPL + 输出 -->
+    <section class="pane pane-right">
+      <div class="repl-box">
+        <div class="pane-header">
+          <span>REPL 输入</span>
+          <span class="hint">Enter 执行 · Shift+Enter 换行</span>
+        </div>
+        <textarea
+          id="repl-input"
+          class="repl-input"
+          rows="3"
+          spellcheck="false"
+          autocomplete="off"
+          placeholder="输入 MiniLang 表达式或语句，例如：let x = 2 * 21; x"></textarea>
+      </div>
+      <div class="output-box">
+        <div class="pane-header">
+          <span>输出区</span>
+        </div>
+        <div id="output" class="output"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="statusbar">
+    <span id="status-mode" class="status-mode">就绪</span>
+    <span class="status-item">词法：<b id="stat-lex">—</b></span>
+    <span class="status-item">语法：<b id="stat-parse">—</b></span>
+    <span class="status-item">求值：<b id="status-eval">—</b></span>
+    <span class="status-spacer"></span>
+    <span class="status-item status-note">lexer → parser → AST → tree-walking evaluator</span>
+  </footer>
+
+  <!-- 经典脚本按依赖顺序加载：保证 file:// 双击打开时无 CORS/控制台错误 -->
+  <script src="src/ast.js"></script>
+  <script src="src/object.js"></script>
+  <script src="src/lexer.js"></script>
+  <script src="src/parser.js"></script>
+  <script src="src/builtins.js"></script>
+  <script src="src/evaluator.js"></script>
+  <script src="src/tests.js"></script>
+  <script src="src/ui.js"></script>
+  <script src="src/main.js"></script>
+</body>
+</html>
