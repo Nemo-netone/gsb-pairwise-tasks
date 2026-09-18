@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MiniLang —— 浏览器端迷你语言解释器</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="toolbar">
+    <div class="brand">
+      <span class="brand-mark">⟨/⟩</span>
+      <span class="brand-name">MiniLang</span>
+      <span class="brand-sub">浏览器端迷你语言解释器 · REPL</span>
+    </div>
+    <div class="toolbar-actions">
+      <button id="btnRun" class="btn btn-primary" type="button">▶ 运行脚本</button>
+      <button id="btnClear" class="btn" type="button">清空输出</button>
+      <label class="select-wrap">
+        <span class="select-label">加载示例</span>
+        <select id="exampleSelect">
+          <option value="">— 选择示例 —</option>
+          <option value="fib">递归斐波那契</option>
+          <option value="counter">闭包计数器</option>
+          <option value="bubble">冒泡排序</option>
+          <option value="million">百万次循环性能测试</option>
+        </select>
+      </label>
+      <button id="btnTests" class="btn btn-test" type="button">运行测试（34 项）</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- 左侧：编辑器 + AST -->
+    <section class="pane pane-left">
+      <div class="pane-header">
+        <span class="pane-title">代码编辑区</span>
+        <span class="pane-hint">Ctrl / Cmd + Enter 运行</span>
+      </div>
+      <div class="editor-wrap">
+        <pre id="lineNumbers" class="line-numbers" aria-hidden="true"></pre>
+        <textarea id="editor" spellcheck="false" autocomplete="off"
+          autocorrect="off" autocapitalize="off"></textarea>
+      </div>
+
+      <div id="astPanel" class="side-panel panel-collapsed">
+        <button id="astToggle" class="panel-toggle" type="button">
+          <span class="panel-arrow">▸</span> AST 可视化（缩进文本树）
+        </button>
+        <pre id="astContent" class="panel-body"></pre>
+      </div>
+
+      <div id="testPanel" class="side-panel test-panel panel-collapsed">
+        <button id="testToggle" class="panel-toggle" type="button">
+          <span class="panel-arrow">▸</span> 内置自测结果
+        </button>
+        <div class="panel-body">
+          <div id="testSummary" class="test-summary">尚未运行</div>
+          <div id="testContent" class="test-content"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 右侧：REPL + 输出 -->
+    <section class="pane pane-right">
+      <div class="repl-wrap">
+        <div class="pane-header">
+          <span class="pane-title">REPL</span>
+          <span class="pane-hint">Enter 执行 · ↑ / ↓ 历史 · 表达式自动回显</span>
+        </div>
+        <div class="repl-row">
+          <span class="repl-prompt">minilang&gt;</span>
+          <input id="replInput" type="text" spellcheck="false" autocomplete="off"
+            placeholder="输入语句（如 let x = 1+2;）或表达式（如 x*2）" />
+        </div>
+      </div>
+
+      <div class="output-wrap">
+        <div class="pane-header">
+          <span class="pane-title">输出区</span>
+          <span class="pane-hint">错误包含 行:列 与 ^ 指向</span>
+        </div>
+        <div id="output" class="output"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="statusbar">
+    <span id="statLex" class="stat-item">词法 0.00 ms</span>
+    <span id="statParse" class="stat-item">语法 0.00 ms</span>
+    <span id="statEval" class="stat-item">求值 0.00 ms</span>
+    <span class="stat-sep">|</span>
+    <span class="stat-item stat-muted">lexer → parser(递归下降/Pratt) → AST → tree-walk evaluator · 零依赖 · 纯前端</span>
+  </footer>
+
+  <!-- 普通 script 顺序加载：file:// 双击打开时 ES Module import 会被
+       浏览器 CORS 策略拦截，故各模块以 IIFE 挂到 ML 命名空间上。 -->
+  <script src="src/object.js"></script>
+  <script src="src/ast.js"></script>
+  <script src="src/lexer.js"></script>
+  <script src="src/parser.js"></script>
+  <script src="src/builtins.js"></script>
+  <script src="src/evaluator.js"></script>
+  <script src="src/tests.js"></script>
+  <script src="src/ui.js"></script>
+  <script src="src/main.js"></script>
+</body>
+</html>
